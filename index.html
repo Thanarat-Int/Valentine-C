@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digital Flower for My Love</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Prompt:wght@200;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --rose-petal: #ff4d6d;
+            --rose-soft: #ffb3c1;
+            --gold-leaf: #d4af37;
+            --bg-romance: #fff5f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-romance);
+            background: radial-gradient(circle at center, #ffffff 0%, #ffeef2 100%);
+            color: #4a4a4a;
+            font-family: 'Prompt', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ambient Floating Hearts Background */
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-110vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #flowerCanvas {
+            z-index: 5;
+        }
+
+        /* 1. Vignette Spotlight */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 40%, rgba(255, 182, 193, 0.4) 80%, rgba(255, 105, 180, 0.6) 100%);
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        /* Intro Overlay */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .gift-container {
+            text-align: center;
+            animation: floatIntro 3s ease-in-out infinite;
+        }
+
+        .bouncing-bouquet {
+            font-size: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 20px rgba(255, 105, 180, 0.3));
+        }
+
+        .click-hint {
+            font-family: 'Prompt', sans-serif;
+            color: var(--rose-petal);
+            font-size: 1.2rem;
+            opacity: 0.8;
+            animation: pulseText 2s infinite;
+        }
+
+        @keyframes floatIntro {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes pulseText {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        .ui-overlay {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        /* Modern Floating Photo Card */
+        .love-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 25px;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(255, 77, 109, 0.1);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 380px;
+            width: 90%;
+            animation: floatUI 4s ease-in-out infinite;
+        }
+
+        @keyframes floatUI {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(1deg);
+            }
+        }
+
+        /* 2. Heartbeat Animation */
+        .photo-circle {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+            animation: heartbeat 3s infinite ease-in-out;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 77, 109, 0.2);
+            }
+
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 0 40px rgba(255, 77, 109, 0.5);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 77, 109, 0.2);
+            }
+        }
+
+        .photo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.4rem;
+            color: var(--rose-petal);
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        .desc {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: #8a8a8a;
+            letter-spacing: 1px;
+        }
+
+        .tap-instruction {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--rose-petal);
+            text-transform: uppercase;
+            opacity: 0.6;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Mobile Optimization for Small Screens */
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .love-card {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .photo-circle {
+                width: 180px;
+                height: 180px;
+            }
+
+            .bouncing-bouquet {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hearts-container" id="heartsContainer"></div>
+    <canvas id="flowerCanvas"></canvas>
+    <div class="vignette"></div>
+
+    <!-- Intro Overlay -->
+    <div id="introOverlay" class="intro-overlay" onclick="acceptGift()">
+        <div class="gift-container">
+            <div class="bouncing-bouquet">💐</div>
+            <div class="click-hint">จิ้มที่ดอกไม้เลยที่รัก!</div>
+        </div>
+    </div>
+
+    <div class="ui-overlay" id="mainUI" style="opacity: 0; pointer-events: none; transition: opacity 1.5s ease;">
+        <div class="love-card" id="mainCard" onclick="giveBouquet(event)">
+            <div class="photo-circle">
+                <!-- รูปคู่ของคุณ -->
+                <img src="photo1.jpg?v=final2" alt="Our Love"
+                    onerror="this.src='https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';">
+            </div>
+            <h1>Happy Valentine</h1>
+            <p class="desc">Love you na kub</p>
+        </div>
+        <div class="tap-instruction">แตะที่หน้าจอเพื่อปลูกดอกไม้ให้เต็มสวน</div>
+    </div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('flowerCanvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, dpr = window.devicePixelRatio || 1;
+            let garden = [];
+            let petals = [];
+            let sparkles = [];
+
+            // Check performance mode (Mobile)
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+            const MAX_FLOWERS = isMobile ? 15 : 40;
+            const SPARKLE_LIMIT = isMobile ? 10 : 30;
+
+            function resize() {
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Floating Hearts Logic
+            function createFloatingHeart() {
+                const container = document.getElementById('heartsContainer');
+                if (!container) return;
+
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = Math.random() > 0.6 ? '💗' : (Math.random() > 0.5 ? '✨' : '🌸');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (8 + Math.random() * 5) + 's';
+                heart.style.fontSize = (15 + Math.random() * 15) + 'px';
+
+                container.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 13000);
+            }
+
+            setInterval(createFloatingHeart, 800);
+
+            // 3. Sparkle Class
+            class Sparkle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.vx = (Math.random() - 0.5) * 2;
+                    this.vy = (Math.random() - 0.5) * 2;
+                    this.life = 1;
+                    this.size = Math.random() * 3 + 1;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.life -= 0.05;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.life;
+                    ctx.fillStyle = '#ffd700'; // Gold
+                    if (!isMobile) {
+                        ctx.shadowBlur = 5;
+                        ctx.shadowColor = '#ffeb3b';
+                    }
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Mouse Move for Sparkles
+            window.addEventListener('mousemove', (e) => {
+                if (sparkles.length < SPARKLE_LIMIT) sparkles.push(new Sparkle(e.clientX, e.clientY));
+            });
+            window.addEventListener('touchmove', (e) => {
+                const t = e.touches[0];
+                if (sparkles.length < SPARKLE_LIMIT) sparkles.push(new Sparkle(t.clientX, t.clientY));
+            });
+
+            // กลไกการวาดกลีบดอกไม้แบบสมจริง
+            class Flower {
+                constructor(x, y, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.maxSize = size;
+                    this.currentSize = 0;
+                    this.color = color;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.petalCount = 5 + Math.floor(Math.random() * 3);
+                    this.layers = isMobile ? 2 : 3;
+                }
+
+                draw() {
+                    if (this.currentSize < this.maxSize) {
+                        this.currentSize += (this.maxSize - this.currentSize) * 0.1;
+                    }
+
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+
+                    // Add Glow to Flowers (disable/reduce on mobile)
+                    if (!isMobile) {
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = this.color;
+                    }
+
+                    // วาดกลีบดอกไม้ซ้อนกันเป็นชั้นๆ
+                    for (let l = 0; l < this.layers; l++) {
+                        const layerSize = this.currentSize * (1 - l * 0.25);
+                        const layerAlpha = 1 - l * 0.2;
+
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = layerAlpha;
+
+                        for (let i = 0; i < this.petalCount; i++) {
+                            ctx.save();
+                            ctx.rotate((i * Math.PI * 2) / this.petalCount + (l * 0.5));
+                            this.drawPetal(layerSize);
+                            ctx.restore();
+                        }
+                    }
+
+                    // เกสรตรงกลาง
+                    ctx.globalAlpha = 1;
+                    ctx.fillStyle = '#ffcc33';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.currentSize * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+                }
+
+                drawPetal(s) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    // ใช้ Bezier เพื่อสร้างรูปทรงกลีบดอกที่นุ่มนวล
+                    ctx.bezierCurveTo(-s, -s * 0.5, -s, s * 1.5, 0, s * 1.5);
+                    ctx.bezierCurveTo(s, s * 1.5, s, -s * 0.5, 0, 0);
+                    ctx.fill();
+                }
+            }
+
+            // กลีบดอกไม้ที่ร่วงหล่นเบาๆ
+            class FallingPetal {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = Math.random() * 5 + 3;
+                    this.vx = (Math.random() - 0.5) * 2;
+                    this.vy = Math.random() * 1 + 0.5;
+                    this.opacity = 1;
+                    this.angle = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.opacity -= 0.01;
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle);
+                    ctx.globalAlpha = Math.max(0, this.opacity);
+                    ctx.fillStyle = '#ffb3c1';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            const colors = ['#ff4d6d', '#ff85a1', '#ffb3c1', '#ffc4d6', '#fce4ec'];
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+
+                // วาดดอกไม้ในสวน
+                garden.forEach(flower => flower.draw());
+
+                // วาดกลีบร่วง
+                petals.forEach((p, i) => {
+                    p.update();
+                    p.draw();
+                    if (p.opacity <= 0) petals.splice(i, 1);
+                });
+
+                // วาด Sparkles
+                sparkles.forEach((s, i) => {
+                    s.update();
+                    s.draw();
+                    if (s.life <= 0) sparkles.splice(i, 1);
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            // ฟังก์ชันปลูกดอกไม้
+            function plantFlower(x, y) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = 30 + Math.random() * 40;
+                garden.push(new Flower(x, y, size, color));
+
+                // จำกัดจำนวนดอกไม้เพื่อความลื่นไหล
+                if (garden.length > MAX_FLOWERS) garden.shift();
+
+                // สร้างกลีบดอกไม้กระจายออกมานิดหน่อยตอนบาน
+                const pCount = isMobile ? 2 : 5;
+                for (let i = 0; i < pCount; i++) petals.push(new FallingPetal(x, y));
+            }
+
+            // Intro Interaction
+            window.acceptGift = () => {
+                const intro = document.getElementById('introOverlay');
+                const mainUI = document.getElementById('mainUI');
+
+                intro.style.opacity = '0';
+                setTimeout(() => intro.style.display = 'none', 800);
+
+                // Show Main UI
+                setTimeout(() => {
+                    mainUI.style.opacity = '1';
+                    mainUI.style.pointerEvents = 'auto';
+                }, 500);
+
+                // Big Explosion Logic
+                const cx = w / 2;
+                const cy = h / 2;
+                const explosionCount = isMobile ? 12 : 20;
+
+                for (let i = 0; i < explosionCount; i++) {
+                    setTimeout(() => {
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = isMobile ? (80 + Math.random() * 50) : (150 + Math.random() * 100);
+                        plantFlower(cx + Math.cos(angle) * dist, cy + Math.sin(angle) * dist);
+
+                        // Extra sparkles
+                        if (i % 2 === 0) sparkles.push(new Sparkle(cx, cy));
+                    }, i * 50);
+                }
+            };
+
+            // คลิกเพื่อปลูกดอกไม้
+            window.addEventListener('mousedown', (e) => {
+                if (document.getElementById('introOverlay').style.display !== 'none') return;
+                if (e.target.closest('.love-card')) return;
+                plantFlower(e.clientX, e.clientY);
+            });
+
+            // กดที่การ์ดเพื่อส่งช่อดอกไม้ชุดใหญ่
+            window.giveBouquet = (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const ang = Math.random() * Math.PI * 2;
+                        const d = 100 + Math.random() * 150;
+                        plantFlower(cx + Math.cos(ang) * d, cy + Math.sin(ang) * d);
+                    }, i * 100);
+                }
+            };
+
+            animate();
+        })();
+    </script>
+</body>
+
+</html>
